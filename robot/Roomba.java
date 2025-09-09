@@ -2,96 +2,50 @@ package robot;
 
 import kareltherobot.*;
 
-public class Roomba implements Directions {
-
-    // Main method to make this self-contained
-    public static void main(String[] args) {
-        // LEAVE THIS ALONE!!!!!!
-        String worldName = "robot/basicRoom.wld";
-
-        Roomba cleaner = new Roomba();
-        int totalBeepers = cleaner.cleanRoom(worldName, 7, 6);
-        System.out.println("Roomba cleaned up a total of " + totalBeepers + " beepers.");
-
-    }
-
-    // declared here so it is visible in all the methods!
-    public Robot roomba;
-
-    public int cleanRoom(String worldName, int startX, int startY) {
-
-        World.readWorld(worldName);
-        World.setVisible(true);
-        World.setDelay(5);
-
-        // Use instance variable instead of local declaration
-        roomba = new Robot(startX, startY, East, 0);
-        int totalBeepersCleaned = 0;
-      while (roomba.frontIsClear())
-{
-while (roomba.nextToABeeper())
-{
-	roomba.pickBeeper();
+public class Roomba implements Directions{
+public static void main(String[] args){
+String worldName="robot/basicRoom.wld";
+Roomba r=new Roomba();
+r.cleanRoom(worldName,7,6);
 }
-	roomba.move();
+public Robot roomba;
+public int cleanRoom(String worldName,int startX,int startY){
+World.readWorld(worldName);
+World.setVisible(true);
+World.setDelay(5);
+roomba=new Robot(startX,startY,East,0);
+int rows=0;
+for(rows=0;rows<5;rows++){
+while(roomba.frontIsClear()){
+while(roomba.nextToABeeper()){
+roomba.pickBeeper();
 }
+roomba.move();
+}
+while(roomba.nextToABeeper()){
+roomba.pickBeeper();
+}
+if(rows==4){
+return 0;
+}
+if(roomba.facingEast()){
 roomba.turnLeft();
-while (roomba.frontIsClear())
-{
-while (roomba.nextToABeeper())
-{
-	roomba.pickBeeper();
-}
-	roomba.move();
-}
-roomba.turnLeft();
-while (roomba.frontIsClear())
-{
-while (roomba.nextToABeeper())
-{
-	roomba.pickBeeper();
-}
-	roomba.move();
-}
-roomba.turnLeft();
+if(roomba.frontIsClear()){
 roomba.move();
 roomba.turnLeft();
-while (roomba.frontIsClear())
-{
-while (roomba.nextToABeeper())
-{
-	roomba.pickBeeper();
 }
-	roomba.move();
-}
+}else{
 roomba.turnLeft();
 roomba.turnLeft();
 roomba.turnLeft();
+if(roomba.frontIsClear()){
 roomba.move();
 roomba.turnLeft();
 roomba.turnLeft();
 roomba.turnLeft();
-while (roomba.frontIsClear())
-{
-while (roomba.nextToABeeper())
-{
-	roomba.pickBeeper();
 }
-	roomba.move();
 }
-roomba.turnLeft();
-roomba.move();
-roomba.turnLeft();
-while (roomba.frontIsClear())
-{
-while (roomba.nextToABeeper())
-{
-	roomba.pickBeeper();
 }
-	roomba.move();
+return 0;
 }
-
-
-        return totalBeepersCleaned;
-    }
 }
