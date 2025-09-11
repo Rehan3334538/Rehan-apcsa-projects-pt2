@@ -37,7 +37,10 @@ class Math {
     //Create 3 variables of each of the above types (USE GOOD CODING PRACTICE WHEN CREATING THE VARIABLES
 
 
-
+   for (int i=1; i<=3; ++i) {
+    robot.turnLeft
+    }
+}
 
 
     //MATH TIME!
