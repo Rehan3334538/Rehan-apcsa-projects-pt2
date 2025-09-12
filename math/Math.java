@@ -37,12 +37,9 @@ class Math {
     //Create 3 variables of each of the above types (USE GOOD CODING PRACTICE WHEN CREATING THE VARIABLES
 
 
-   for (int i=1; i<=3; ++i) {
-    robot.turnLeft
-    }
+   for (int i = 2; i <= 100; i += 2) {
+    System.out.println(i);
 }
-
-
     //MATH TIME!
 
     //What are the math operators that we can use?
