@@ -6,15 +6,15 @@ public class Roomba implements Directions {
     public Robot roomba;
 
     public static void main(String[] args) {
-        String worldName = "robot/basicRoom.wld";
+        String worldName = "robot/finalTestWorld2024.wld";
         Roomba r = new Roomba();
-        r.cleanRoom(worldName, 7, 6);
+        r.cleanRoom(worldName, 26, 101);
     }
 
     public int cleanRoom(String worldName, int startX, int startY) {
         World.readWorld(worldName);
         World.setVisible(true);
-        World.setDelay(5);
+        World.setDelay(0);
         roomba = new Robot(startX, startY, East, 0);
 
         int maxPile = 0;
