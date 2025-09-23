@@ -1,81 +1,90 @@
 package robot;
 
+
 import kareltherobot.*;
 
+
 public class Roomba implements Directions {
-    public Robot roomba;
 
-    public static void main(String[] args) {
-        String worldName = "robot/finalTestWorld2024.wld";
-        Roomba r = new Roomba();
-        r.cleanRoom(worldName, 26, 101);
-    }
+   public static void main(String[] args) {
+       String worldName = "robot/finalTestWorl2024.wld";
 
-    public int cleanRoom(String worldName, int startX, int startY) {
-        World.readWorld(worldName);
-        World.setVisible(true);
-        World.setDelay(0);
-        roomba = new Robot(startX, startY, East, 0);
 
-        int maxPile = 0;
-        int total = 0;
-        int maxStreet = startX;
-        int maxAvenue = startY;
-        for (int rows = 0; rows < 5; rows++) {
-            while (roomba.frontIsClear()) {
-                int pile = 0;
-                while (roomba.nextToABeeper()) {
-                    roomba.pickBeeper();
-                    pile++;
-                    total++;
-                }
-                if (pile > 0) System.out.println("Average pile size: " + pile);
-                if (pile > maxPile) {
-                    maxPile = pile;
-                    maxStreet = roomba.street();
-                    maxAvenue = roomba.avenue();
-                }
-                roomba.move();
-            }
-            int pile = 0;
-            while (roomba.nextToABeeper()) {
-                roomba.pickBeeper();
-                pile++;
-                total++;
-            }
-            if (pile > 0) System.out.println("Average pile size: " + pile);
-            if (pile > maxPile) {
-                maxPile = pile;
-                maxStreet = roomba.street();
-                maxAvenue = roomba.avenue();
-            }
-            if (rows == 4) {
-                System.out.println("Largest pile: " + maxPile);
-                System.out.println("Location of largest pile: Street " + maxStreet + ", Avenue " + maxAvenue);
-                System.out.println("Total beepers: " + total);
-                return total;
-            }
-            if (roomba.facingEast()) {
-                roomba.turnLeft();
-                if (roomba.frontIsClear()) {
-                    roomba.move();
-                    roomba.turnLeft();
-                }
-            } else {
-                roomba.turnLeft();
-                roomba.turnLeft();
-                roomba.turnLeft();
-                if (roomba.frontIsClear()) {
-                    roomba.move();
-                    roomba.turnLeft();
-                    roomba.turnLeft();
-                    roomba.turnLeft();
-                }
-            }
-        }
-        System.out.println("Largest pile: " + maxPile);
-        System.out.println("Location of largest pile: Street " + maxStreet + ", Avenue " + maxAvenue);
-        System.out.println("Total beepers: " + total);
-        return total;
-    }
+       Roomba cleaner = new Roomba();
+       int totalBeepers = cleaner.cleanRoom(worldName, 26, 101);
+        System.out.println("Roomba cleaned up a total of " + totalBeepers + " beepers.");
+   }
+   private Robot roomba;
+   public int cleanRoom(String worldName, int startX, int startY) {
+       World.readWorld(worldName);
+       World.setVisible(true);
+       World.setDelay(0);
+
+
+       roomba = new Robot(startX, startY, East, 0);
+       int count = 0;
+       int numPiles = 0;
+       int numSteps = 0;
+       boolean end = true;
+       while(end){
+           while(roomba.nextToABeeper()){
+                   roomba.pickBeeper();
+                   count++;
+               }
+           while(roomba.frontIsClear()){
+               roomba.move();
+               numSteps++;
+               if(roomba.nextToABeeper() == true){
+                   numPiles++;
+               }
+               while(roomba.nextToABeeper()){
+                   roomba.pickBeeper();
+                   count++;
+               }
+           }
+           if(roomba.facingEast() && !roomba.frontIsClear()){
+               while(roomba.nextToABeeper()){
+                   roomba.pickBeeper();
+                   count++;
+               }
+               roomba.turnLeft();
+               roomba.move();
+               numSteps++;
+               while(roomba.nextToABeeper()){
+                   roomba.pickBeeper();
+                   count++;
+               }
+               roomba.turnLeft();
+           }
+           if(roomba.facingWest() && !roomba.frontIsClear()){
+               while(roomba.nextToABeeper()){
+                   roomba.pickBeeper();
+                   count++;
+               }
+               turnRight(roomba);
+               roomba.move();
+               numSteps++;
+               while(roomba.nextToABeeper()){
+                   roomba.pickBeeper();
+                   count++;
+               }
+               turnRight(roomba);
+           }
+           if(roomba.facingNorth() && !roomba.frontIsClear()){
+               end = false;
+           }
+       }
+       System.out.println("Total number of beepers: "+ count);
+       System.out.println("Dirty percentage: "+ (double)numPiles/numSteps +"%");
+       System.out.println("Average pile size: "+ (double)count/numPiles);
+       System.out.println("Area: "+numSteps);
+       System.out.println("Total number of piles: "+ numPiles);
+       return count;
+   }
+   public static void turnRight(Robot roomba){
+       roomba.turnLeft();
+       roomba.turnLeft();
+       roomba.turnLeft();
+   }
 }
+ 
