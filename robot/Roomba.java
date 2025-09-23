@@ -27,10 +27,11 @@ public class Roomba implements Directions {
        int numSteps = 0;
        boolean end = true;
        while(end){
-           while(roomba.nextToABeeper()){
+           //pickingup beeprs
+        while(roomba.nextToABeeper()){
                    roomba.pickBeeper();
                    count++;
-               }
+               }//moving forward and clearing
            while(roomba.frontIsClear()){
                roomba.move();
                numSteps++;
@@ -41,7 +42,7 @@ public class Roomba implements Directions {
                    roomba.pickBeeper();
                    count++;
                }
-           }
+           }//when facing a wall turn and go clear
            if(roomba.facingEast() && !roomba.frontIsClear()){
                while(roomba.nextToABeeper()){
                    roomba.pickBeeper();
@@ -56,6 +57,7 @@ public class Roomba implements Directions {
                }
                roomba.turnLeft();
            }
+          //when facing a wall while west turn and clear again
            if(roomba.facingWest() && !roomba.frontIsClear()){
                while(roomba.nextToABeeper()){
                    roomba.pickBeeper();
@@ -73,7 +75,7 @@ public class Roomba implements Directions {
            if(roomba.facingNorth() && !roomba.frontIsClear()){
                end = false;
            }
-       }
+       }//printing out the numbers etc
        System.out.println("Total number of beepers: "+ count);
        System.out.println("Dirty percentage: "+ (double)numPiles/numSteps +"%");
        System.out.println("Average pile size: "+ (double)count/numPiles);
@@ -81,7 +83,7 @@ public class Roomba implements Directions {
        System.out.println("Total number of piles: "+ numPiles);
        return count;
    }
-   public static void turnRight(Robot roomba){
+   public static void turnRight(Robot roomba){//turn left 3 times to turn right
        roomba.turnLeft();
        roomba.turnLeft();
        roomba.turnLeft();
