@@ -42,6 +42,7 @@ public class App {
             Book output = PigLatinTranslator.translate(input);
             output.printlines(0,2);
             output.writeToFile("test.txt");
+            if
         }
     }
 }

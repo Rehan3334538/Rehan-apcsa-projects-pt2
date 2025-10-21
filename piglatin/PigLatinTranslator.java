@@ -34,9 +34,16 @@ public class PigLatinTranslator {
         // TODO: Replace this code to correctly translate a single word.
         // Start here first!
         // This is the first place to work.
-        result = input; // delete this line
+    
 
         return result;
+        if index(0,2).equals("a");
+if index(0,2).equals("e");
+if index(0,2).equals("i");
+if index(0,2).equals("o");
+if index(0,2).equals("u");
+result = input + "ay";
+else result = input.substring(1);
     }
 
     // Add additonal private methods here.
