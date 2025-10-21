@@ -34,20 +34,19 @@ public class PigLatinTranslator {
         // TODO: Replace this code to correctly translate a single word.
         // Start here first!
         // This is the first place to work.
-    
-
-        return result;
-        if index(0,2).equals("a");
-if index(0,2).equals("e");
-if index(0,2).equals("i");
-if index(0,2).equals("o");
-if index(0,2).equals("u");
-result = input + "ay";
-else result = input.substring(1);
+        if (input.length() > 0) {
+            char firstChar = input.charAt(0);
+            if ("aeiouAEIOU".indexOf(firstChar)!= -1){
+                result = input +  "ay";
+            } else {
+                result = input.substring(1) + firstChar+ "ay";
+            }
+            }
+        }
     }
 
     // Add additonal private methods here.
     // For example, I had one like this:
     // private static String capitalizeFirstLetter(String input)
 
-}
+
