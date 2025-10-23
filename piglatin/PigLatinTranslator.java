@@ -41,6 +41,7 @@ public class PigLatinTranslator {
             } else {
                 result = input.substring(1) + firstChar+ "ay";
             }
+            if capital letters
             }
         }
     }
