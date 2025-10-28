@@ -2,28 +2,24 @@ package piglatin;
 
 public class PigLatinTranslator {
 
-    // ✅ Translate a full Book (line by line)
+    // Translate a whole Book
     public static Book translate(Book input) {
         Book translatedBook = new Book();
         translatedBook.setTitle(input.getTitle() + " (Pig Latin)");
 
-        // Loop through each line of the input book
         for (int i = 0; i < input.getLineCount(); i++) {
             String line = input.getLine(i);
-            String translatedLine = translate(line);
-            translatedBook.appendLine(translatedLine);
+            translatedBook.appendLine(translate(line));
         }
 
         return translatedBook;
     }
 
-    // ✅ Translate an entire sentence or line of text
+    // Translate a line or sentence
     public static String translate(String input) {
         System.out.println("  -> translate('" + input + "')");
 
-        if (input == null || input.isEmpty()) {
-            return input;
-        }
+        if (input.trim().isEmpty()) return "";
 
         StringBuilder result = new StringBuilder();
         String[] words = input.split("\\s+"); // split by whitespace
@@ -38,63 +34,48 @@ public class PigLatinTranslator {
         return result.toString();
     }
 
-    // ✅ Translate a single word to Pig Latin
+    // Translate a single word to Pig Latin
     private static String translateWord(String input) {
         System.out.println("  -> translateWord('" + input + "')");
 
         if (input.isEmpty()) return input;
 
-        // Handle punctuation (e.g., “word,” → “ordway,”)
-        String word = input;
+        // Handle punctuation at the end
         String punctuation = "";
-        if (!Character.isLetter(word.charAt(word.length() - 1))) {
-            punctuation = word.substring(word.length() - 1);
-            word = word.substring(0, word.length() - 1);
+        if (!Character.isLetterOrDigit(input.charAt(input.length() - 1))) {
+            punctuation = input.substring(input.length() - 1);
+            input = input.substring(0, input.length() - 1);
         }
 
-        // Check capitalization
-        boolean isCapitalized = Character.isUpperCase(word.charAt(0));
-        word = word.toLowerCase();
+        // Handle hyphenated words separately
+        if (input.contains("-")) {
+            String[] parts = input.split("-");
+            StringBuilder hyphenResult = new StringBuilder();
+            for (int i = 0; i < parts.length; i++) {
+                hyphenResult.append(translateWord(parts[i]));
+                if (i < parts.length - 1) {
+                    hyphenResult.append("-");
+                }
+            }
+            return hyphenResult.toString() + punctuation;
+        }
+
+        // Detect capitalization of the first letter
+        boolean isCapital = Character.isUpperCase(input.charAt(0));
+        String lower = input.toLowerCase();
 
         String result;
-        char firstChar = word.charAt(0);
-
-        if ("aeiou".indexOf(firstChar) != -1) {
-            // Starts with vowel
-            result = word + "yay";
+        if ("aeiou".indexOf(lower.charAt(0)) != -1) {
+            result = lower + "ay"; // vowel rule
         } else {
-            // Starts with consonant(s)
-            int vowelIndex = findFirstVowel(word);
-            if (vowelIndex == -1) {
-                result = word + "ay"; // no vowels
-            } else {
-                result = word.substring(vowelIndex) + word.substring(0, vowelIndex) + "ay";
-            }
+            result = lower.substring(1) + lower.charAt(0) + "ay"; // consonant rule
         }
 
-        // Restore capitalization
-        if (isCapitalized) {
-            result = capitalizeFirstLetter(result);
+        // Apply capitalization to first letter
+        if (isCapital && result.length() > 0) {
+            result = Character.toUpperCase(result.charAt(0)) + result.substring(1);
         }
 
-        // Add punctuation back
         return result + punctuation;
-    }
-
-    // ✅ Helper: find index of first vowel
-    private static int findFirstVowel(String word) {
-        String vowels = "aeiou";
-        for (int i = 0; i < word.length(); i++) {
-            if (vowels.indexOf(word.charAt(i)) != -1) {
-                return i;
-            }
-        }
-        return -1;
-    }
-
-    // ✅ Helper: capitalize first letter
-    private static String capitalizeFirstLetter(String input) {
-        if (input.isEmpty()) return input;
-        return Character.toUpperCase(input.charAt(0)) + input.substring(1);
     }
 }
