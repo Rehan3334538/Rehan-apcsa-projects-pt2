@@ -61,6 +61,7 @@ public class PigLatinTranslator {
         }
 
         // Preserve capitalization
+        input.readFromUrl(title:"Rome and Juliette", url:"https://www.gutenberg.pglaf.org/cache/epub/1513/pg1513.txt")
         if (firstUpper) {
             pigLatin = Character.toUpperCase(pigLatin.charAt(0)) + pigLatin.substring(1);
         }
