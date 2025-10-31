@@ -1,10 +1,34 @@
+package piglatin;
+
 import java.io.*;
+import java.net.*;
 import java.util.*;
 
-public class PigLatinTranslator {
+public class App {
     public static void main(String[] args) {
-        File inputFile = new File("pg77136.txt"); // the downloaded book
-        File outputFile = new File("pg77136_piglatin.txt"); // translated output
+        // Download and translate Romeo and Juliet
+        processBook("https://www.gutenberg.org/cache/epub/1513/pg1513.txt", 
+                    "pg1513.txt", "pg1513_piglatin.txt", "Romeo and Juliet");
+        
+        // Download and translate Frankenstein
+        processBook("https://www.gutenberg.org/cache/epub/84/pg84.txt", 
+                    "pg84.txt", "pg84_piglatin.txt", "Frankenstein");
+    }
+    
+    private static void processBook(String urlString, String inputFileName, 
+                                     String outputFileName, String bookTitle) {
+        File inputFile = new File(inputFileName);
+        
+        try {
+            System.out.println("Downloading " + bookTitle + "...");
+            downloadFile(urlString, inputFile);
+            System.out.println("Download complete!");
+        } catch (IOException e) {
+            System.out.println("Error downloading file: " + e.getMessage());
+            return;
+        }
+
+        File outputFile = new File(outputFileName);
 
         try (Scanner scanner = new Scanner(inputFile);
              PrintWriter writer = new PrintWriter(outputFile)) {
@@ -22,10 +46,25 @@ public class PigLatinTranslator {
         }
     }
 
-    public static String translateToPigLatin(String sentence) {
-        if (sentence.trim().isEmpty()) return ""; // skip empty lines
+    private static void downloadFile(String urlString, File outputFile) throws IOException {
+        URI uri = URI.create(urlString);
+        URL url = uri.toURL();
+        
+        try (InputStream in = url.openStream();
+             FileOutputStream out = new FileOutputStream(outputFile)) {
+            
+            byte[] buffer = new byte[8192];
+            int bytesRead;
+            while ((bytesRead = in.read(buffer)) != -1) {
+                out.write(buffer, 0, bytesRead);
+            }
+        }
+    }
 
-        String[] words = sentence.split(" ");
+    public static String translateToPigLatin(String sentence) {
+        if (sentence.trim().isEmpty()) return "";
+
+        String[] words = sentence.split("\\s+");
         StringBuilder sb = new StringBuilder();
 
         for (String word : words) {
@@ -54,16 +93,30 @@ public class PigLatinTranslator {
         String lowerWord = word.toLowerCase();
 
         String pigLatin;
-        if ("aeiou".indexOf(lowerWord.charAt(0)) != -1) {
+        
+        // Move all leading consonants to the end
+        int firstVowelIndex = -1;
+        for (int i = 0; i < lowerWord.length(); i++) {
+            if ("aeiou".indexOf(lowerWord.charAt(i)) != -1) {
+                firstVowelIndex = i;
+                break;
+            }
+        }
+
+        if (firstVowelIndex == 0) {
+            // Starts with vowel
             pigLatin = lowerWord + "ay";
+        } else if (firstVowelIndex > 0) {
+            // Starts with consonants
+            pigLatin = lowerWord.substring(firstVowelIndex) + lowerWord.substring(0, firstVowelIndex) + "ay";
         } else {
-            pigLatin = lowerWord.substring(1) + lowerWord.charAt(0) + "ay";
+            // No vowels (unlikely but handle it)
+            pigLatin = lowerWord + "ay";
         }
 
         // Preserve capitalization
-        input.readFromUrl(title:"Rome and Juliette", url:"https://www.gutenberg.pglaf.org/cache/epub/1513/pg1513.txt")
         if (firstUpper) {
-            pigLatin = Character.toUpperCase(pigLatin.charAt(0)) + pigLatin.substring(1);
+            pigLatin = Character.toUpperCase(pigLatin.charAt(0)) + pigLatin.substring(1).toLowerCase();
         }
 
         return pigLatin;
