@@ -1,6 +1,7 @@
 package gol;
 
 public class App {
+    //read instructions and prepping on how to do it
 
     public static void main(String[] args)
     {
