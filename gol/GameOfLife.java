@@ -4,79 +4,123 @@ import java.util.Arrays;
 
 public class GameOfLife implements Board {
 
-    // Integers: 0 or 1 for alive or dead
+    // Current and next generation boards
     private int[][] board;
+    private int[][] nextBoard;
 
-    public GameOfLife(int x, int y)
-    {
-        // Construct a 2d array of the given x and y size.
+    // Constructor: creates an empty board of given dimensions
+    public GameOfLife(int height, int width) {
+        this.board = new int[height][width];
+        this.nextBoard = new int[height][width];
+        // All cells are dead (0) by default
     }
 
-    // Set values on the board
+    // Set a pattern at position (x, y)
     public void set(int x, int y, int[][] data) {
         for (int i = 0; i < data.length; i++) {
-            for (int j = 0; j < data[0].length; j++) {
-                board[i + x][j + y] = data[i][j];
+            for (int j = 0; j < data[i].length; j++) {
+                if (i + x < board.length && j + y < board[0].length) {
+                    board[i + x][j + y] = data[i][j];
+                }
             }
         }
     }
 
-    // Run the simulation for a number of turns
+    @Override
     public void run(int turns) {
-        // call step the number of times requested
+        for (int i = 0; i < turns; i++) {
+            step();
+        }
     }
 
-    // Step the simulation forward one turn.
-    public void step()
-    {
+    @Override
+    public void step() {
+        int height = board.length;
+        int width = board[0].length;
+
+        // Compute next generation
+        for (int x = 0; x < height; x++) {
+            for (int y = 0; y < width; y++) {
+                int neighbors = countNeighbors(x, y);
+                int cell = board[x][y];
+
+                if (cell == 1) {
+                    // Live cell
+                    if (neighbors == 2 || neighbors == 3) {
+                        nextBoard[x][y] = 1;  // survives
+                    } else {
+                        nextBoard[x][y] = 0;  // dies
+                    }
+                } else {
+                    // Dead cell
+                    if (neighbors == 3) {
+                        nextBoard[x][y] = 1;  // birth
+                    } else {
+                        nextBoard[x][y] = 0;  // stays dead
+                    }
+                }
+            }
+        }
+
+        // Swap boards (fast reference swap)
+        int[][] temp = board;
+        board = nextBoard;
+        nextBoard = temp;
+
+        // Optional: print every step (useful for demo)
         print();
-        // Update the game board, store a 1 if the cell is alive and a 0 otherwise.
     }
 
-
+    @Override
     public int countNeighbors(int x, int y) {
         int count = 0;
-        // count the number of neighbors the cell has
-        // use the get(x,y) method to read any board state you need.
+        for (int dx = -1; dx <= 1; dx++) {
+            for (int dy = -1; dy <= 1; dy++) {
+                if (dx == 0 && dy == 0) continue; // skip center cell
+
+                int nx = x + dx;
+                int ny = y + dy;
+
+                // Use wrap-around via get()
+                count += get(nx, ny);
+            }
+        }
         return count;
     }
 
-    // Get a value from the board with "wrap around"
-    // Locations outside the board will loop back into the board.
-    // Ex: -1 will read board.length-1
+    @Override
     public int get(int x, int y) {
-        int xLimit = board.length;
-        int yLimit= board[0].length;
-        return board[(x+xLimit)%xLimit][(y+yLimit)%yLimit];
+        int height = board.length;
+        int width = board[0].length;
+        int wrappedX = (x + height) % height;
+        int wrappedY = (y + width) % width;
+        return board[wrappedX][wrappedY];
     }
 
-    // Test helper to get the whole board state
-    public int[][] get()
-    {
+    // Returns a reference to current board (for testing)
+    @Override
+    public int[][] get() {
         return board;
     }
 
-    // Test helper to print the current state
-    public void print(){
-        // Print the header
-        System.out.print("\n ");
-        for (int y = 0; y < board[0].length; y++) {
-            System.out.print(y%10 + " ");
-        }
+    // Pretty-print the board with coordinates
+    public void print() {
+        int height = board.length;
+        int width = board[0].length;
 
-        for (int x = 0; x < board.length; x++) {
-            System.out.print("\n" + x%10);
-            for (int y=0; y<board[x].length; y++)
-            {
-                if (board[x][y] == 1)
-                {
-                    System.out.print("⬛");
-                }
-                else
-                {
-                    System.out.print("⬜");
-                }
+        // Top header
+        System.out.print("\n  ");
+        for (int y = 0; y < width; y++) {
+            System.out.print(y % 10 + " ");
+        }
+        System.out.println();
+
+        for (int x = 0; x < height; x++) {
+            System.out.print(x % 10 + " ");
+            for (int y = 0; y < width; y++) {
+                System.out.print(board[x][y] == 1 ? "Black Square" : "White Square");
             }
+            System.out.println();
         }
         System.out.println();
     }
