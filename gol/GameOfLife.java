@@ -1,91 +1,117 @@
 package gol;
 
-class GameOfLife implements Board {
+import java.util.Arrays;
 
+public class GameOfLife implements Board {
+
+    // Integers: 0 or 1 for alive or dead
     private int[][] board;
-    private int[][] nextBoard;
 
-    // Constructor: create board of given size
-    public GameOfLife(int height, int width) {
-        this.board = new int[height][width];
-        this.nextBoard = new int[height][width];
+    public GameOfLife(int x, int y)
+    {
+        // Construct a 2d array of the given x and y size.
+        board = new int[x][y];
     }
 
-    // Set a pattern starting at (x, y)
+    // Set values on the board
     public void set(int x, int y, int[][] data) {
-        for (int i = 0; i < data.length; i++) {
-            for (int j = 0; j < data[i].length; j++) {
-                if (i + x < board.length && j + y < board[0].length) {
-                    board[i + x][j + y] = data[i][j];
-                }
+        for (int r = 0; r < data.length; r++) {
+            for (int c = 0; c < data[r].length; c++) {
+                board[x + r][y + c] = data[r][c];
             }
         }
     }
 
-    @Override
+    // Run the simulation for a number of turns
     public void run(int turns) {
-        for (int i = 0; i < turns; i++) {
+        // call step the number of times requested
+        int count = 0;
+        while (count < turns) {
             step();
+            count++;
         }
     }
 
-    @Override
-    public void step() {
-        int height = board.length;
-        int width = board[0].length;
+    // Step the simulation forward one turn.
+    public void step()
+    {
+        print();
+        int rows = board.length;
+        int cols = board[0].length;
 
-        for (int x = 0; x < height; x++) {
-            for (int y = 0; y < width; y++) {
-                int neighbors = countNeighbors(x, y);
-                int cell = board[x][y];
+        int[][] newBoard = new int[rows][cols];
 
-                if (cell == 1) {
-                    nextBoard[x][y] = (neighbors == 2 || neighbors == 3) ? 1 : 0;
+        for (int r = 0; r < rows; r++) {
+            for (int c = 0; c < cols; c++) {
+
+                int alive = get(r, c);
+                int n = countNeighbors(r, c);
+
+                if (alive == 1) {
+                    newBoard[r][c] = (n == 2 || n == 3) ? 1 : 0;
                 } else {
-                    nextBoard[x][y] = (neighbors == 3) ? 1 : 0;
+                    newBoard[r][c] = (n == 3) ? 1 : 0;
                 }
             }
         }
 
-        // Swap boards
-        int[][] temp = board;
-        board = nextBoard;
-        nextBoard = temp;
+        board = newBoard;
+        // Update the game board, store a 1 if the cell is alive and a 0 otherwise.
     }
 
-    @Override
+
     public int countNeighbors(int x, int y) {
         int count = 0;
+
+        // count the number of neighbors the cell has
+        // use the get(x,y) method to read any board state you need.
         for (int dx = -1; dx <= 1; dx++) {
             for (int dy = -1; dy <= 1; dy++) {
                 if (dx == 0 && dy == 0) continue;
-                count += get(x + dx, y + dy);
+
+                int nx = x + dx;
+                int ny = y + dy;
+
+                count += get(nx, ny);
             }
         }
+
         return count;
     }
 
-    @Override
+    // Get a value from the board with "wrap around"
+    // Locations outside the board will loop back into the board.
+    // Ex: -1 will read board.length-1
     public int get(int x, int y) {
-        int height = board.length;
-        int width = board[0].length;
-        int wrappedX = ((x % height) + height) % height; // wrap around edges
-        int wrappedY = ((y % width) + width) % width;
+        int rows = board.length;
+        int cols = board[0].length;
+
+        int wrappedX = (x % rows + rows) % rows;
+        int wrappedY = (y % cols + cols) % cols;
+
         return board[wrappedX][wrappedY];
     }
 
-    @Override
-    public int[][] get() {
+    // Test helper to get the whole board state
+    public int[][] get()
+    {
         return board;
     }
 
-    // Optional: print board for debugging
-    public void print() {
-        for (int i = 0; i < board.length; i++) {
-            for (int j = 0; j < board[i].length; j++) {
-                System.out.print(board[i][j] == 1 ? "█ " : "· ");
+    // Test helper to print the current state
+    public void print(){
+        // Print the header
+        System.out.print("\n ");
+        for (int y = 0; y < board[0].length; y++) {
+            System.out.print((y % 10) + " ");
+        }
+
+        for (int x = 0; x < board.length; x++) {
+            System.out.print("\n" + (x % 10));
+            for (int y = 0; y < board[x].length; y++)
+            {
+                System.out.print(board[x][y] == 1 ? "⬛" : "⬜");
             }
-            System.out.println();
         }
         System.out.println();
     }
