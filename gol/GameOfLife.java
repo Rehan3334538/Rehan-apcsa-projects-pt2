@@ -1,21 +1,17 @@
 package gol;
 
-import java.util.Arrays;
+class GameOfLife implements Board {
 
-public class GameOfLife implements Board {
-
-    // Current and next generation boards
     private int[][] board;
     private int[][] nextBoard;
 
-    // Constructor: creates an empty board of given dimensions
+    // Constructor: create board of given size
     public GameOfLife(int height, int width) {
         this.board = new int[height][width];
         this.nextBoard = new int[height][width];
-        // All cells are dead (0) by default
     }
 
-    // Set a pattern at position (x, y)
+    // Set a pattern starting at (x, y)
     public void set(int x, int y, int[][] data) {
         for (int i = 0; i < data.length; i++) {
             for (int j = 0; j < data[i].length; j++) {
@@ -38,37 +34,23 @@ public class GameOfLife implements Board {
         int height = board.length;
         int width = board[0].length;
 
-        // Compute next generation
         for (int x = 0; x < height; x++) {
             for (int y = 0; y < width; y++) {
                 int neighbors = countNeighbors(x, y);
                 int cell = board[x][y];
 
                 if (cell == 1) {
-                    // Live cell
-                    if (neighbors == 2 || neighbors == 3) {
-                        nextBoard[x][y] = 1;  // survives
-                    } else {
-                        nextBoard[x][y] = 0;  // dies
-                    }
+                    nextBoard[x][y] = (neighbors == 2 || neighbors == 3) ? 1 : 0;
                 } else {
-                    // Dead cell
-                    if (neighbors == 3) {
-                        nextBoard[x][y] = 1;  // birth
-                    } else {
-                        nextBoard[x][y] = 0;  // stays dead
-                    }
+                    nextBoard[x][y] = (neighbors == 3) ? 1 : 0;
                 }
             }
         }
 
-        // Swap boards (fast reference swap)
+        // Swap boards
         int[][] temp = board;
         board = nextBoard;
         nextBoard = temp;
-
-        // Optional: print every step (useful for demo)
-        print();
     }
 
     @Override
@@ -76,13 +58,8 @@ public class GameOfLife implements Board {
         int count = 0;
         for (int dx = -1; dx <= 1; dx++) {
             for (int dy = -1; dy <= 1; dy++) {
-                if (dx == 0 && dy == 0) continue; // skip center cell
-
-                int nx = x + dx;
-                int ny = y + dy;
-
-                // Use wrap-around via get()
-                count += get(nx, ny);
+                if (dx == 0 && dy == 0) continue;
+                count += get(x + dx, y + dy);
             }
         }
         return count;
@@ -92,33 +69,21 @@ public class GameOfLife implements Board {
     public int get(int x, int y) {
         int height = board.length;
         int width = board[0].length;
-        int wrappedX = (x + height) % height;
-        int wrappedY = (y + width) % width;
+        int wrappedX = ((x % height) + height) % height; // wrap around edges
+        int wrappedY = ((y % width) + width) % width;
         return board[wrappedX][wrappedY];
     }
 
-    // Returns a reference to current board (for testing)
     @Override
     public int[][] get() {
         return board;
     }
 
-    // Pretty-print the board with coordinates
+    // Optional: print board for debugging
     public void print() {
-        int height = board.length;
-        int width = board[0].length;
-
-        // Top header
-        System.out.print("\n  ");
-        for (int y = 0; y < width; y++) {
-            System.out.print(y % 10 + " ");
-        }
-        System.out.println();
-
-        for (int x = 0; x < height; x++) {
-            System.out.print(x % 10 + " ");
-            for (int y = 0; y < width; y++) {
-                System.out.print(board[x][y] == 1 ? "Black Square" : "White Square");
+        for (int i = 0; i < board.length; i++) {
+            for (int j = 0; j < board[i].length; j++) {
+                System.out.print(board[i][j] == 1 ? "█ " : "· ");
             }
             System.out.println();
         }
