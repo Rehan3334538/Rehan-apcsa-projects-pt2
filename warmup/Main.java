@@ -28,7 +28,7 @@ public class Main {
 
                 int days = daysInMonth[month];
 
-                // February leap year adjustment
+            
                 if (month == 1 && isLeapYear(year)) {
                     days++;
                 }
