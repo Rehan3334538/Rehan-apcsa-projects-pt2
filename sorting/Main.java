@@ -5,7 +5,7 @@ import java.util.Random;
 public class Main {
     public static void main(String[] args) {
 
-        int[] testInput = randomArray(5);
+        int[] testInput = randomArray(800);
 
         // Increase this once everything works
         TestSuite.run(testInput, 1);
@@ -17,7 +17,7 @@ public class Main {
         int[] arr = new int[length];
 
         for (int i = 0; i < length; i++) {
-            arr[i] = rand.nextInt(100); 
+            arr[i] = rand.nextInt(800); 
         }
 
         return arr;
