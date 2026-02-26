@@ -41,15 +41,24 @@ public class IrregularPolygon {
         return area;
     }
 
-    public void draw()
-    {
-        // Wrap the DrawingTool in a try/catch to allow development without need for graphics.
-        try {
-            // TODO: Draw the polygon.
-            // Documents: https://pavao.org/compsci/gpdraw/html/gpdraw/DrawingTool.html
-            //DrawingTool myDrawingTool = new DrawingTool(new SketchPad(500, 500));
-            //myDrawingTool.move(50, 50);
-        } catch (java.awt.HeadlessException e) {
+    public void draw() {
+    try {
+        if (myPolygon.size() < 2) return;
+
+        DrawingTool myDrawingTool = new DrawingTool(new SketchPad(500, 500));
+        Point2D.Double first = myPolygon.get(0);
+
+        myDrawingTool.up();
+        myDrawingTool.move(first.getX(), first.getY());
+        myDrawingTool.down();
+
+        for (int i = 1; i < myPolygon.size(); i++) {
+            Point2D.Double current = myPolygon.get(i);
+            myDrawingTool.move(current.getX(), current.getY());
         }
+
+        myDrawingTool.move(first.getX(), first.getY());
+    } catch (java.awt.HeadlessException e) {
     }
+}
 }
