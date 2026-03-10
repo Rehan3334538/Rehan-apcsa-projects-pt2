@@ -51,10 +51,14 @@ public class IrregularPolygon {
 
     return Math.abs(area) / 2.0;
 }
-    
-
     public void draw() {
     try {
+        myPolygon.clear();
+        myPolygon.add(new Point2D.Double(100, 100)); 
+        myPolygon.add(new Point2D.Double(300, 100));
+        myPolygon.add(new Point2D.Double(350, 250));
+        myPolygon.add(new Point2D.Double(50, 250)); 
+
         if (myPolygon.size() < 2) return;
 
         DrawingTool myDrawingTool = new DrawingTool(new SketchPad(500, 500));
@@ -71,6 +75,7 @@ public class IrregularPolygon {
 
         myDrawingTool.move(first.getX(), first.getY());
     } catch (java.awt.HeadlessException e) {
+        System.err.println("error");
     }
-}
+}   
 }
