@@ -8,6 +8,7 @@ public class Main {
         // TowerModel model = new TowerModel(3);
         //TowerSolver solver = new TowerSolver();
         //solver.solve(model);
+        // testing game but understanding project
 
         // Run test suite
         TestSuite test = new TestSuite();
