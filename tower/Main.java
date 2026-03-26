@@ -2,12 +2,16 @@ package tower;
 
 public class Main {
 
-    public static void main(String[] args) {
+ public static void main(String[] args) {
+    int nDisks = 3;
+    // TowerModel acts as the state manager (stacks for rods)
+    TowerModel model = new TowerModel(nDisks); 
+    TowerSolver solver = new TowerSolver();
+    
+    // Solves by moving n disks from rod A to C using B
+    solver.solve(nDisks, 'A', 'C', 'B'); 
+}
 
-        // Example: Solve a tower
-        // TowerModel model = new TowerModel(3);
-        //TowerSolver solver = new TowerSolver();
-        //solver.solve(model);
         // testing game but understanding project
 
         // Run test suite
