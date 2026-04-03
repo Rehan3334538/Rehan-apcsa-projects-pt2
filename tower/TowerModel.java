@@ -24,14 +24,20 @@ return towerHeight;
 }
 
 public void move(int source, int destination) {
-System.out.println("Move #" + ++moveCounter + " from " + source + " to " + destination);
-
-int disk = towers[source].pop();
-if (disk != 0) {
-towers[destination].push(disk);
-}
-
-print();
+    int disk = towers[source].peek();
+    if (disk != 0) {
+        int destDisk = towers[destination].peek();
+        if (destDisk == 0 || destDisk > disk) {
+            // can move
+            towers[source].pop();
+            towers[destination].push(disk);
+            System.out.println("Move #" + ++moveCounter + " from " + source + " to " + destination);
+            // print();
+        } else {
+            // cannot move
+            System.out.println("Cannot move from " + source + " to " + destination);
+        }
+    }
 }
 
 public void print() {
